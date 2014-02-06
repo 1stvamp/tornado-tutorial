@@ -1,0 +1,311 @@
+<!doctype html>  
+<html lang="en">
+	
+	<head>
+		<meta charset="utf-8">
+		
+		<title>Stormy Webber</title>
+
+		<base href="reveal.js/">
+
+		<meta name="description" content="A talk for WyPy">
+		<meta name="author" content="Wes Mason">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		
+		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+		
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/theme/default.css" id="theme">
+		<link rel="stylesheet" href="../css/talk.css">
+		<link rel="stylesheet" href="../css/pdf.css", type="text/css" media="print">
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+	
+	<body>
+		
+		<div class="reveal">
+
+			<!-- Used to fade in a background when a specific slide state is reached -->
+			<div class="state-background"></div>
+			
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+				## Stormy Webber
+
+				Wes Mason  
+				
+				[@1stvamp](http://twitter.com/1stvamp)  
+				
+				[www.serverdensity.com](http://www.serverdensity.com/)  
+				</section>
+				<section>
+				## Who?
+				- 	 @1stvamp (twitter/github)
+				- 	 Engineer at [Server Density](https://www.serverdensity.com/)
+				- 	 I release lots of open source code
+				</section>
+
+				<section>
+				<section>
+				## Tornado
+				- 	 Fast web server that supports non-blocking I/O
+				- 	 Developed at FriendFeed, open sourced at Facebook in 2009
+				- 	 Long polling, WebSockets etc.
+				- 	 Pure Python
+				</section>
+
+				<section>
+				## Tornado cont.
+				- 	 **Not** a framework.
+				- 	 Usual "framework" features, sessions, auth, templates etc.
+				- 	 Support for callbacks, coroutines and futures (Tulip*ish*)
+				</section>
+				</section>
+
+				<section>
+				## Asynchronous
+				- 	 Asynchronous != parallel
+				- 	 Cooperative "threading" via callbacks and coroutines
+				- 	 Non-blocking I/O, both HTTP client/server built in
+				</section>
+
+				<section>
+				<section>
+					## Stringing cats
+					- 	 `ioloop.add_callback`, `ioloop.add_future`
+					- 	 `gen.coroutine`, `gen.Task`, `gen.Wait`
+				</section>
+				<section>
+					## e.g.
+					```
+					result = yield motor.Op(db.messages.insert, {'msg': msg})
+					
+					# vs.
+					
+					db.messages.insert(
+					    {'msg': msg},
+					    callback=self._on_response)
+					```
+				</section>
+				</section>
+
+				<section>
+				<section>
+					## Great for RESTful webservices
+				</section>
+				<section>
+					## e.g.
+					```
+					import tornado.web
+					from sys import exit
+
+					from .handlers import ResourceHandler
+					
+					def main():
+					    application = tornado.web.Application((
+						(r"/resources/", ResourceHandler, "resources-root")
+						),)
+					    
+					    application.listen(port=8888, address='0.0.0.0')
+					    return tornado.ioloop.IOLoop.instance().start()
+					
+					if __name__ == "__main__":
+					    exit(main())
+					```
+				</section>
+				<section>
+					## e.g.
+					```
+					import time
+					from tornado.web import asynchronous, RequestHandler
+
+					class ResourceHandler(RequestHandler):
+					    def prepare(self):
+						self.user_id = self.get_argument('user')
+					
+					    @asynchronous
+					    def get(self):
+						tornado.ioloop.IOLoop.instance().add_timeout(
+							time.time()+60, self._end)
+
+					    def _end(self):
+						self.finish('hello world!')
+					```
+				</section>
+				</section>
+
+				<section>
+				<section>
+				## Best tool for the job
+				- 	 Can be mixed freely with other libraries
+				- 	 Mostly useful if there is an async library available for your backend component
+				- 	 If you want socket.io support gevent has a better library etc.
+				</section>
+
+				<section>
+				## Batteries included
+				- 	 Templating, auth handlers (including Twitter OAuth `LOL`)
+				- 	 HTTP client / server
+				- 	 TCP client / server (Streams)
+				</section>
+
+				<section>
+				## Batteries included cont.
+				- 	 Thread pools
+				- 	 Async DNS (`c-ares`, threads, `TwistedResolver`)
+				- 	 Process pooling with bound master socket/port
+				</section>
+
+				<section>
+				## Batteries included cont.
+				- 	 `tornado.platform.twisted`
+				- 	 WebSockets / Longpolling
+				- 	 SMTP client
+				</section>
+				</section>
+
+				<section>
+				## Bonus &amp; tricks
+				- 	 Coroutines can be wrapped with greenlets (tornalet)
+				- 	 pycurl and libcurl are **fast**
+				- 	 Support for Futures (PEP 3156)
+				- 	 It runs on pypy, extremely fast
+				</section>
+
+				<section>
+				<section>
+				## trequests
+				- 	 Use libraries that use `python-requests` for HTTP
+				- 	 Use Tornado's AsyncHTTPClient/CurlAsyncHTTPClient instead of `httplib3`
+				- 	 Caveat: does require `greenlet`
+				</section>
+				<section>
+				## trequests cont.
+				```
+				"""bobs_big_data.py"""
+				import requests
+
+				class BigData(object):
+				    ...
+
+				    def post(self):
+				        r = requests.post(self.url, data=self.data)
+				        return r.json()
+				```
+				</section>
+				<section>
+				## trequests cont.
+				```
+				import bobs_big_data
+				from tornado.web import RequestHandler
+				from trequests import setup_session
+				from tornalet import tornalet
+
+				setup_session()
+
+				class WebHandler(RequestHandler):
+				    @tornalet
+				    def get(self):
+				        data = {'foo': 'bar'}
+				        response = bobs_big_data.BigData(data).post()
+				        return self.write(response)
+				```
+				</section>
+				<section>
+				## trequests cont.
+				[github.com/1stvamp/trequests](https://github.com/1stvamp/trequests/)
+				</section>
+				</section>
+
+				<section>
+				<section class="exit1">
+				## sys.exit(0)
+				- 	 Code: [git.io/sd](https://git.io/sd) / [git.io/1v](git.io/1v)
+				- 	 Slides: [github.com/1stvamp/stormy-webber](https://github.com/1stvamp/stormy-webber)
+				</section>
+				<section class="exit2">
+				## ^D
+				- 	 Jonathan "Joff" Oliver: [about.me/joffie](http://about.me/joffie)
+				- 	 Grab me and say hi `:-)`
+				</section>
+				</section>
+			</div>
+
+			<!-- The navigational controls UI -->
+			<aside class="controls">
+				<a class="left" href="#">&#x25C4;</a>
+				<a class="right" href="#">&#x25BA;</a>
+				<a class="up" href="#">&#x25B2;</a>
+				<a class="down" href="#">&#x25BC;</a>
+			</aside>
+
+			<!-- Presentation progress bar -->
+			<div class="progress"><span></span></div>
+			
+		</div>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script>
+			$(function() {
+			$('div.slides section').each(function(i, el) {
+				el = $(el);
+				if (el.children('section').length > 0) {
+				return true;
+				}
+				el.addClass('slide-' + (i+1));
+				el.attr('data-markdown', '1');
+			});
+			window.initReveal();
+			});
+		</script>
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+			window.initReveal = function() {	
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				overview: true,
+				rollingLinks: false,
+				
+				theme: Reveal.getQueryHash().theme || 'default', // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/linear(2d)
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: '../lib/js/showdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'lib/js/data-markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: '/socket.io/socket.io.js', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+					{ src: 'plugin/speakernotes/client.js', async: true, condition: function() { return window.location.host === 'localhost:1947'; } },
+				]
+				});
+			};
+			Reveal.addEventListener( 'slidechanged', function(event) {
+			    if ($(event.currentSlide).is('.exit2')) {
+				$(event.currentSlide).addClass('animate-exit2');
+				setTimeout(function() {
+				    $(event.currentSlide).removeClass('exit2');
+				    $(event.currentSlide).removeClass('animate-exit2');
+				    setTimeout(function() {
+					$(event.currentSlide).addClass('exit3');
+					$(event.currentSlide).addClass('animate-exit3');
+				    }, 100);
+				}, 4500);
+			    }
+			});
+			
+		</script>
+
+	</body>
+</html>

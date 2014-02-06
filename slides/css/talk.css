@@ -1,0 +1,150 @@
+body {
+    background: #fff;
+}
+* {
+    color: #000;
+}
+h1, h2, h3, h4, h5, h6 {
+    padding-top: 0.5em;
+    color: #000 !important;
+}
+
+li {
+    list-style-position: inside;
+}
+
+li, span, pre {
+    background-color: #fff;
+    opacity: 0.75;
+    font-size: 80%;
+}
+
+ul {
+    width: 50%;
+}
+
+section {
+    background-repeat: no-repeat;
+    background-position: left center;
+    margin-top: 2%;
+    width: 100%;
+}
+
+.reveal a {
+    color: #767676 !important;
+}
+
+.slide-1 {
+    background-image: url('../images/westalkstormywebber.png');
+    background-position: 0 -1em;
+}
+
+
+.slide-1 a {
+    background-color: #fff;
+    opacity: 0.60;
+}
+
+.slide-2 {
+    background-image: url('../images/westalkwhois.png');
+    background-position: -3em 0;
+}
+
+.slide-4, .slide-5 {
+    background-image: url('../images/westalktornados.png');
+}
+
+.slide-6 {
+    background-image: url('../images/westalkasynch.png');
+    background-position: -1em 0;
+}
+
+.slide-8 {
+    background-image: url('../images/westalkstringingcats.png');
+}
+
+.slide-11 {
+    background-image: url('../images/westalkrestful.png');
+}
+
+.slide-15 {
+    background-image: url('../images/westalkbestman.png');
+    background-position: -2em -1em;
+}
+
+.slide-15 li, .slide-16 li, .slide-17 li, .slide-18 li {
+    margin-bottom: 0.5ex;
+}
+
+.slide-19 {
+    background-image: url('../images/westalktipsandtricks.png');
+    background-position: -2em 0;
+}
+
+.exit1 {
+    background-image: url('../images/westalksysexit1.png');
+}
+
+.exit2 {
+    background-image: url('../images/westalkexitmoped.png');
+    background-position: 1000px 0;
+}
+
+.exit3 {
+    background-image: url('../images/westalkexitmob.png');
+    background-position: 1000px 0;
+}
+
+.animate-exit2 {
+    -webkit-animation-duration: 8s;
+    -webkit-animation-name: slidein;
+    -moz-animation-duration: 8s;
+    -moz-animation-name: slidein;
+}
+
+@-webkit-keyframes slidein {
+  from {
+    background-position: -6em 0;
+  }
+ 
+  to {
+    background-position: 1000px 0;
+  }
+}
+
+@-moz-keyframes slidein {
+  from {
+    background-position: -14em 0;
+  }
+ 
+  to {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-exit3 {
+    -webkit-animation-duration: 8s;
+    -webkit-animation-name: slidein2;
+    -moz-animation-duration: 8s;
+    -moz-animation-name: slidein2;
+}
+
+@-webkit-keyframes slidein2 {
+  from {
+    background-position: -6em 0;
+  }
+ 
+  to {
+    background-position: 1000px 0;
+  }
+}
+
+@-moz-keyframes slidein2 {
+  from {
+    background-position: -6em 0;
+  }
+ 
+  to {
+    background-position: 1000px 0;
+  }
+}
