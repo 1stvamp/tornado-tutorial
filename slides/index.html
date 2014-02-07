@@ -130,6 +130,16 @@
 					## RESTful
 				</section>
 				<section>
+				## URL mapping regexes
+				```
+				application = web.Application([
+				    (r"/", MainHandler),
+				    (r"/things/", ThingHandler),
+				    (r"/things/(?P<id>[0-9a-f]+)", ThingHandler)
+				])
+				```
+				</section>
+				<section>
 				## e.g.
 				```
 				def get(self, id=None):
