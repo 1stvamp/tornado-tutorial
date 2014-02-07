@@ -14,8 +14,6 @@
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 		
-		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-		
 		<link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/theme/default.css" id="theme">
 		<link rel="stylesheet" href="../slides/css/talk.css">
@@ -36,7 +34,6 @@
 			<!-- Any section element inside of this container is displayed as a slide -->
 			<div class="slides">
 				<section>
-				## <s>Stormy Webber</s>
 				## Tornado and Friends
 
 				Wes Mason  
@@ -70,6 +67,59 @@
 				</section>
 
 				<section>
+				<section>
+				## Whyyyyyy?
+				</section>
+				<section>
+				## Speed
+				</section>
+				<section>
+				## Longpolling and websockets
+				</section>
+				<section>
+				## Use your existing WSGI app
+				</section>
+				</section>
+
+				<section>
+				<section>
+				## Getting started
+				```
+				$ sudo pip install virtualenvwrapper
+				$ mkvirtualenv tornado-tutorial
+				$ mkdir tornado-tutorial
+				$ cd tornado-tutorial
+				$ pip install tornado
+				```
+				</section>
+				<section>
+				## Getting started cont.
+				```
+				$ touch app.py
+				$ &lt;editor&gt; app.py
+				```
+				</section>
+				<section>
+				## Getting started cont.
+				```
+				from tornado import ioloop, web
+
+				class MainHandler(web.RequestHandler):
+				    def get(self):
+				        self.write("Hello, world?")
+
+				application = web.Application([
+				    (r"/", MainHandler),
+				])
+
+				if __name__ == "__main__":
+				    application.listen(8888)
+				    ioloop.IOLoop.instance().start()
+				```
+				</section>
+				</section>
+
+				<section class="async">
 				## Asynchronous
 				- 	 Asynchronous != parallel
 				- 	 Cooperative "threading" via callbacks and coroutines
@@ -77,27 +127,20 @@
 				</section>
 
 				<section>
-				<section>
+				<section class="cats">
 					## Stringing cats
 					- 	 `ioloop.add_callback`, `ioloop.add_future`
 					- 	 `gen.coroutine`, `gen.Task`, `gen.Wait`
 				</section>
-				<section>
-					## e.g.
-					```
-					result = yield motor.Op(db.messages.insert, {'msg': msg})
-					
-					# vs.
-					
-					db.messages.insert(
-					    {'msg': msg},
-					    callback=self._on_response)
-					```
+				<section class="cats">
+					## Stringing cats
+					- 	 **`ioloop.add_callback`**, <s>`ioloop.add_future`</s>
+					- 	 <s>`gen.coroutine`, `gen.Task`, `gen.Wait`</s>
 				</section>
 				</section>
 
 				<section>
-				<section>
+				<section class="restful">
 					## Great for RESTful webservices
 				</section>
 				<section>
@@ -141,8 +184,8 @@
 				</section>
 				</section>
 
-				<section>
-				<section>
+				<section class="bestsection">
+				<section class="best">
 				## Best tool for the job
 				- 	 Can be mixed freely with other libraries
 				- 	 Mostly useful if there is an async library available for your backend component
@@ -171,8 +214,8 @@
 				</section>
 				</section>
 
-				<section>
-				## Bonus &amp; tricks
+				<section class="tricks">
+				## Bonuses &amp; tricks
 				- 	 Coroutines can be wrapped with greenlets (tornalet)
 				- 	 pycurl and libcurl are **fast**
 				- 	 Support for Futures (PEP 3156)
@@ -251,7 +294,7 @@
 			
 		</div>
 
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script src="../slides/lib/js/jquery.min.js"></script>
 		<script>
 			$(function() {
 			$('div.slides section').each(function(i, el) {
