@@ -56,6 +56,10 @@ section {
     margin-top: 10%;
 }
 
+.slide-27 {
+    background-image: url('../images/websockets.jpg');
+}
+
 .async {
     background-image: url('../images/westalkasynch.png');
     background-position: -1em 0;

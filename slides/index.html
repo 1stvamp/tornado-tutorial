@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 		
-		<title>Stormy Webber</title>
+		<title>Tornado and Friends</title>
 
 		<base href="../reveal.js/">
 
@@ -117,13 +117,153 @@
 				    ioloop.IOLoop.instance().start()
 				```
 				</section>
+				<section>
+				## TODO
+				- 	 Try using `def prepare(self):`
+				- 	 Try out other methods, e.g. `post`
+				- 	 Pass different types to `self.write()`
+				</section>
 				</section>
 
+				<section>
+				<section class="restful">
+					## RESTful
+				</section>
+				<section>
+				## e.g.
+				```
+				def get(self, id=None):
+				    if id is None:
+				        # get list items
+				        self.write(items)
+				    else:
+				        # get item by `id`
+				        self.write(item)
+
+				def post(self):
+				    pass
+
+				def put(self, id):
+				    pass
+				```
+				</section>
+				</section>
+
+				<section>
 				<section class="async">
 				## Asynchronous
 				- 	 Asynchronous != parallel
 				- 	 Cooperative "threading" via callbacks and coroutines
 				- 	 Non-blocking I/O, both HTTP client/server built in
+				</section>
+				<section>
+				## Meet the `asynchronous` decorator
+				</section>
+				<section>
+					## e.g.
+					```
+					from time import time
+					from tornado.ioloop import IOLoop
+					from tornado.web import asynchronous, RequestHandler
+
+					class MainHandler(RequestHandler):
+					    @asynchronous
+					    def get(self):
+					        IOLoop.instance().add_timeout(
+					            time() + 60,
+					            self._end)
+
+					    def _end(self):
+					        self.finish('hello world!')
+					```
+				</section>
+				<section>
+				## HTTP client
+				```
+				from tornado.httpclient import AsyncHTTPClient
+
+				...
+				    client = AsyncHTTPClient()
+				        client.fetch(
+				        request='http://www.example.com/',
+				        method='get',
+				        callback=self.handle_request,
+				    )
+				
+				```
+				</section>
+				<section>
+				## HTTP client cont.
+				```
+				def handle_request(self, response):
+				    out = {
+				        'status': response.code,
+				        'body': response.body
+				    }
+				    self.finish(out)
+				```
+				</section>
+				<section>
+				## TODO
+				- 	 Try using `add_timeout()` and `add_callback()`
+				- 	 Try doing a web request, e.g. [to this file](../files/payroll.json)
+				- 	 What else can we do with long polling? How about a news feed?
+				</section>
+				</section>
+
+				<section>
+				<section>
+				## WebSockets!
+				</section>
+				<section>
+				## Whargh?
+				- 	 HTML5 API for actual persistent socket connections
+				- 	 Not actually HTTP requests
+				- 	 also see [socket.io](http://socket.io/) and [SockJS](http://sockjs.org/)
+				- 	 Push, rather than pull
+				</section>
+				<section>
+				## WebSocket handlers in Tornado
+				```
+				from tornado.escape import json_encode
+				from tornado.websocket import WebSocketHandler
+
+				class ShinyHandler(WebSocketHandler):
+				    def open(self):
+				        pass
+
+				    def on_message(self, msg):
+				        self.write_message(json_encode({
+				            'msg': 'Got it, thanks!'
+					}))
+
+				    def on_close(self):
+				        pass
+				```
+				</section>
+				<section>
+				## WebSocket handlers in Tornado cont.
+				```
+				class ShinyHandler(WebSocketHandler):
+				    handlers = []
+
+				    def open(self):
+				        self.handlers.append(self)
+
+				    def on_message(self, msg):
+				        ...
+
+				    def on_close(self):
+				        self.handlers.remove(self)
+				```
+				</section>
+
+				<section>
+				## TODO
+				- 	 Make a WebSocket handler
+				- 	 Grab [this HTML file](../files/websockets.html) and expirement with sending data t the handler
+				- 	 Can you write a basic chat app?
+				</section>
 				</section>
 
 				<section>
@@ -131,56 +271,6 @@
 					## Stringing cats
 					- 	 `ioloop.add_callback`, `ioloop.add_future`
 					- 	 `gen.coroutine`, `gen.Task`, `gen.Wait`
-				</section>
-				<section class="cats">
-					## Stringing cats
-					- 	 **`ioloop.add_callback`**, <s>`ioloop.add_future`</s>
-					- 	 <s>`gen.coroutine`, `gen.Task`, `gen.Wait`</s>
-				</section>
-				</section>
-
-				<section>
-				<section class="restful">
-					## Great for RESTful webservices
-				</section>
-				<section>
-					## e.g.
-					```
-					import tornado.web
-					from sys import exit
-
-					from .handlers import ResourceHandler
-					
-					def main():
-					    application = tornado.web.Application((
-						(r"/resources/", ResourceHandler, "resources-root")
-						),)
-					    
-					    application.listen(port=8888, address='0.0.0.0')
-					    return tornado.ioloop.IOLoop.instance().start()
-					
-					if __name__ == "__main__":
-					    exit(main())
-					```
-				</section>
-				<section>
-					## e.g.
-					```
-					import time
-					from tornado.web import asynchronous, RequestHandler
-
-					class ResourceHandler(RequestHandler):
-					    def prepare(self):
-						self.user_id = self.get_argument('user')
-					
-					    @asynchronous
-					    def get(self):
-						tornado.ioloop.IOLoop.instance().add_timeout(
-							time.time()+60, self._end)
-
-					    def _end(self):
-						self.finish('hello world!')
-					```
 				</section>
 				</section>
 
