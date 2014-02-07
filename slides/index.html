@@ -242,7 +242,16 @@
 				```
 				</section>
 				<section>
-				## WebSocket handlers in Tornado cont.
+				## WebSocket handlers cont.
+				```
+				application = web.Application([
+				    (r"/", MainHandler),
+				    (r"/socket/", ShinyHandler)
+				])
+				```
+				</section>
+				<section>
+				## WebSocket handlers cont.
 				```
 				class ShinyHandler(WebSocketHandler):
 				    handlers = []

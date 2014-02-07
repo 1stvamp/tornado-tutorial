@@ -1,0 +1,26 @@
+<html>
+
+<head>
+<title>WebSockets, hooooo!</title>
+<script type="text/javascript">
+var ws = new WebSocket("ws://localhost:8888/socket/");
+ws.onmessage = function(event) {
+    console.log(event.data);
+};
+function senddata() {
+    ws.send(document.getElementById('textdata').value);
+    return false;
+}
+</script>
+</head>
+
+<body>
+    <div class="container">
+	<form onsubmit="return senddata();">
+	<textarea id="textdata" cols="50" rows="20"></textarea>
+	<input type="submit"/>
+	</form>
+    </div>
+</body>
+
+</html>
