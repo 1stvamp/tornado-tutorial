@@ -85,6 +85,7 @@
 				<section>
 				## Getting started
 				```
+				$ # you may also need to `sudo easy_install pip`
 				$ sudo pip install virtualenvwrapper
 				$ mkvirtualenv tornado-tutorial
 				$ mkdir tornado-tutorial
@@ -96,7 +97,7 @@
 				## Getting started cont.
 				```
 				$ touch app.py
-				$ &lt;editor&gt; app.py
+				$ $EDITOR app.py
 				```
 				</section>
 				<section>
@@ -182,6 +183,7 @@
 					        IOLoop.instance().add_timeout(
 					            time() + 60,
 					            self._end)
+					        self.flush()
 
 					    def _end(self):
 					        self.finish('hello world!')
@@ -194,9 +196,9 @@
 
 				...
 				    client = AsyncHTTPClient()
-				        client.fetch(
+				    client.fetch(
 				        request='http://www.example.com/',
-				        method='get',
+				        method='GET',
 				        callback=self.handle_request,
 				    )
 				
