@@ -50,9 +50,8 @@ Grab <a href="/files/pipcache.tgz">this file</a> and pass it around.
 </p>
 
 <pre><code>$ # activate your virtualenv
-$ export PIP_DOWNLOAD_CACHE=$HOME/.pipcache
-$ tar xzf pipcache.tgz -C ~/
-$ pip install backports.ssl_match_hostname==3.4.0.2 certifi==14.05.14 tornado==4.0.2</code></pre>
+$ tar xzf pipcache.tgz
+$ pip install -I --no-index --find-links=file://$PWD/pipcache tornado</code></pre>
         </section>
       </div>
     </div>
